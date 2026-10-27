@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détection des Tumeurs Cérébrales</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+
+            /* 🔥 Background dégradé moderne */
+            background: linear-gradient(135deg, #1e3a8a, #2563eb, #60a5fa);
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 30px;
+        }
+
+        .container {
+
+            background: rgba(255,255,255,0.95);
+
+            width: 60%;
+            max-width: 700px;
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+            text-align: center;
+
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #1e3a8a;
+            margin-bottom: 25px;
+            font-size: 32px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        /* 🔥 cacher input file original */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* 🔥 nouveau bouton moderne */
+        .custom-file-upload {
+
+            display: inline-block;
+
+            padding: 14px 25px;
+
+            background: #2563eb;
+
+            color: white;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+            font-size: 16px;
+
+            margin-bottom: 20px;
+        }
+
+        .custom-file-upload:hover {
+            background: #1d4ed8;
+            transform: scale(1.03);
+        }
+
+        #file-name {
+            margin-top: 10px;
+            color: #444;
+            font-size: 15px;
+        }
+
+        button {
+
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+
+            color: white;
+
+            border: none;
+
+            padding: 14px 30px;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 17px;
+
+            transition: 0.3s;
+        }
+
+        button:hover {
+
+            transform: scale(1.05);
+
+            box-shadow: 0 5px 15px rgba(37,99,235,0.4);
+        }
+
+        .resultat {
+
+            margin-top: 30px;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            background: #eef2ff;
+        }
+
+        h2 {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+        }
+
+        img {
+
+            margin-top: 20px;
+
+            border-radius: 15px;
+
+            max-width: 300px;
+
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .recommendation {
+
+            margin-top: 20px;
+
+            font-size: 18px;
+
+            color: #333;
+
+            line-height: 1.6;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Détection des Tumeurs Cérébrales par IRM</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <!-- 🔥 Nouveau bouton fichier -->
+            <label for="file-upload" class="custom-file-upload">
+                Choisir une image IRM
+            </label>
+
+            <input id="file-upload" type="file" name="file" required>
+
+            <div id="file-name">
+                Aucun fichier sélectionné
+            </div>
+
+            <br><br>
+
+            <button type="submit">
+                Analyser l'image
+            </button>
+
+        </form>
+
+        {% if prediction %}
+
+        <div class="resultat">
+
+            <h2>Prédiction : {{ prediction }}</h2>
+
+            <img src="{{ image_path }}" alt="Image IRM">
+
+            <div class="recommendation">
+
+                {% if prediction == 'glioma' %}
+                    <p>
+                        Recommandation : Les tumeurs gliomes peuvent nécessiter
+                        des examens IRM supplémentaires, une biopsie et une
+                        consultation avec un neurologue ou un oncologue.
+                    </p>
+
+                {% elif prediction == 'meningioma' %}
+                    <p>
+                        Recommandation : Le méningiome est souvent bénin,
+                        mais une évaluation médicale reste nécessaire afin
+                        de déterminer les meilleures options de traitement.
+                    </p>
+
+                {% elif prediction == 'pituitary' %}
+                    <p>
+                        Recommandation : Les tumeurs hypophysaires peuvent
+                        affecter la production hormonale. Une consultation
+                        en endocrinologie est recommandée.
+                    </p>
+
+                {% elif prediction == 'notumor' %}
+                    <p>
+                        Recommandation : Aucun signe de tumeur détecté par
+                        le modèle IA. Une confirmation clinique par un médecin
+                        reste recommandée.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- 🔥 Afficher nom du fichier -->
+    <script>
+
+        const fileInput = document.getElementById("file-upload");
+        const fileName = document.getElementById("file-name");
+
+        fileInput.addEventListener("change", function() {
+
+            if(this.files.length > 0) {
+                fileName.textContent = this.files[0].name;
+            }
+            else {
+                fileName.textContent = "Aucun fichier sélectionné";
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
